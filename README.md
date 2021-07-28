@@ -1,5 +1,5 @@
 
-# Temporario_sem_controle_de_versao
+# Curso R - Coursera
 
 <!-- badges: start -->
 <!-- badges: end -->
