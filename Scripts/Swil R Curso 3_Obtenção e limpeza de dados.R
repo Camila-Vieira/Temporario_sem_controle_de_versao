@@ -1,6 +1,5 @@
 ### Curso 3/10: Obtenção e limpeza de dados 
 # Swirl
-library(swirl)
 install_from_swirl("Getting and Cleaning Data")
 swirl()
 # 1: Manipulating Data with dplyr
@@ -17,8 +16,6 @@ cran <- tbl_df(mydf) # criar um novo tbl_df chamado cran
 rm("mydf") # Remover o dataframe original da area de trabalho
 cran # imprimir no console -> tdl_df é mais informativo do que dataframe
 # O pacote dply possui: select(), filter(), arrange(), mutate(), and summarize()
-
-
 
 # selecionar um subconjunto de colunas usando select()
 ?select # Ler documentação da primeira função
@@ -66,19 +63,3 @@ mutate(cran3, correct_size = size + 1000)
 ## summarize() reduz o conjunto de dados em uma única linha. 
 summarize(cran, avg_bytes = mean(size)) # estamos interessados em saber o tamanho médio do download, resultará no valor médio do tamanho da variável
 
-
-
-
-###########################################################################
-
-# swirl Lesson 2: Grouping and Chaining with dplyr
-library(dplyr) # Carregar pacote
-cran <- tbl_df(mydf)  # Pegar *mydf* tranaformando em *tbl_df* e amazenando-a em nova variavel *cran*
-rm('mydf') # Remover dado original
-cran # Visualizar no console
-# Agrupar os dados por nome de pacotes
-?group_by # Abrir arquivo de ajuda
-by_package <- group_by(cran, package) # Agrupar *cran* pela variavel *package* e armazenar em *by_package*
-by_package
-# No topo verei *Groups: package*, agora qualquer coisa que alterar ocorrerá pela variavel pacote
-summarize(by_package, mean(size)) # Observar o tamanho médio do download para cada pacote exclusivo
