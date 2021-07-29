@@ -272,3 +272,16 @@ submit()
 #### swirl Lesson 3: Tidying Data with tidyr
 library(swirl)
 swirl()
+# Nesta lição, você aprenderá como organizar seus dados com o pacote tidyr.
+library(tidyr) # Carregar pacote
+# Os dados organizados *tidyr* são formatados de uma forma padrão que facilita a exploração e a análise e funcionam perfeitamente com outras ferramentas de dados organizados.
+# Os dados organizados satisfazem três condições:
+# 1) Cada variável forma uma coluna 
+# 2) Cada observação forma uma linha
+# 3) Cada tipo de unidade observacional forma uma tabela
+students # Dados confusos, pois tem cabeçalhos de coluna que são valores, não nomes de variáveis.
+# A primeira coluna representa cada uma das cinco séries possíveis que os alunos podem receber para uma classe particular. A segunda e terceira colunas fornecem o número de alunos do sexo masculino e feminino, respectivamente, que receberam cada série.
+# Esse conjunto de dados tem três variáveis: nota, sexo e contagem. A primeira coluna está correta.
+?gather # Reúna colunas em pares de valores-chave
+
+
