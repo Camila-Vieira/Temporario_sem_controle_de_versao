@@ -284,4 +284,168 @@ students # Dados confusos, pois tem cabeçalhos de coluna que são valores, não
 # Esse conjunto de dados tem três variáveis: nota, sexo e contagem. A primeira coluna está correta.
 ?gather # Reúna colunas em pares de valores-chave
 
+gather(students, sex, count, -grade) # Reunir todas as colunas, EXCETo *-grade*, pois ela já está correta
+# Cada linha dos dados agora representa exatamente uma observação, caracterizada por uma combinação única das variáveis de grade e sex. Cada uma de nossas variáveis (grade, sex e count) ocupa exatamente uma coluna.
+
+students2 # Dados confusos, pois tem  várias variáveis armazenadas em uma coluna.
+# existem duas classes separadas, 1 e 2, e temos contagens totais para cada sex dentro de cada classe. 
+# ter cabeçalhos de coluna que são valores (male_1, female_1, etc.) e não nomes de variáveis (sex, classe e count)
+# também tem várias variáveis armazenadas em cada coluna (sex e classe), que é outro sintoma comum de dados confusos.
+res <- gather(students2, sex_class, count, -grade) # O mesmo procedimento que realizei com *students*
+res
+# ainda temos duas variáveis diferentes, sex e classe, armazenadas juntas na coluna sex_class. 
+?separate  # Separe uma coluna de caracteres em várias colunas
+separate(res, col = sex_class, into = c("sex", "class")) # Separar a coluna sex_class em sex e class.
+  
+
+######################## Script1 ###########################
+# Repeat your calls to gather() and separate(), but this time
+# use the %>% operator to chain the commands together without
+# storing an intermediate result.
+#
+# If this is your first time seeing the %>% operator, check
+# out ?chain, which will bring up the relevant documentation.
+# You can also look at the Examples section at the bottom
+# of ?gather and ?separate.
+#
+# The main idea is that the result to the left of %>%
+# takes the place of the first argument of the function to
+# the right. Therefore, you OMIT THE FIRST ARGUMENT to each
+# function.
+#
+students2 %>%
+  gather( sex_class, count, -grade ) %>%
+  separate( sex_class, c("sex", "class")) %>%
+  print
+
+submit()
+
+
+#####################################
+
+students3 # Dados confusos, são armazenadas em ambas as linhas e colunas
+# temos notas de meio de semestre *midterm* e exame final *exam grades* para cinco alunos, cada um dos quais estava matriculado em exatamente duas das cinco classes possíveis.
+# A primeira variável, *name*, já é uma coluna e deve permanecer assim.
+# Os cabeçalhos das últimas cinco colunas, class1 a class5, são todos valores diferentes do que deveria ser uma variável de classe.
+# Os valores na coluna de *test*, *midterm*(intermediário) e *final*, devem ser cada um sua própria variável contendo as respectivas notas para cada estudante.
+
+############################## Script2 #########################
+# Call gather() to gather the columns class1
+# through class5 into a new variable called class.
+# The 'key' should be class, and the 'value'
+# should be grade.
+#
+# tidyr makes it easy to reference multiple adjacent
+# columns with class1:class5, just like with sequences
+# of numbers.
+#
+# Since each student is only enrolled in two of
+# the five possible classes, there are lots of missing
+# values (i.e. NAs). Use the argument na.rm = TRUE
+# to omit these values from the final result.
+#
+# Remember that when you're using the %>% operator,
+# the value to the left of it gets inserted as the
+# first argument to the function on the right.
+#
+# Consult ?gather and/or ?chain if you get stuck.
+#
+students3 %>%
+  gather(class, grade, class1:class5, na.rm = TRUE) %>%
+  print
+# Enviar para rodar depois de salvar
+submit()
+
+########################## Script3 ###########################
+?spread # permitirá transformar o valores da coluna de test, midterm e final, em cabeçalhos de coluna (ou seja, variáveis).
+library(swirl)
+swirl()
+
+# This script builds on the previous one by appending
+# a call to spread(), which will allow us to turn the
+# values of the test column, midterm and final, into
+# column headers (i.e. variables).
+#
+# You only need to specify two arguments to spread().
+# Can you figure out what they are? (Hint: You don't
+# have to specify the data argument since we're using
+# the %>% operator.
+#
+students3 %>%
+  gather(class, grade, class1:class5, na.rm = TRUE) %>%
+  spread(test, grade) %>%
+  print
+submit()
+
+############################# Script4 ###########################
+library(readr)
+parse_number("class5")
+# We want the values in the class columns to be
+# 1, 2, ..., 5 and not class1, class2, ..., class5.
+#
+# Use the mutate() function from dplyr along with
+# parse_number(). Hint: You can "overwrite" a column
+# with mutate() by assigning a new value to the existing
+# column instead of creating a new column.
+#
+# Check out ?mutate and/or ?parse_number if you need
+# a refresher.
+#
+students3 %>%
+  gather(class, grade, class1:class5, na.rm = TRUE) %>%
+  spread(test, grade) %>%
+  mutate(class = parse_number(class))%>%
+  print
+submit()
+?mutate # renomeia
+?parse_number  # Remove os numeros
+
+################################## Script5 #######################
+students4 # Dados confusos, quando várias variaveis são armazenadas na mesma tabela
+# fornece uma id única para cada aluno, bem como seu sexo (M = masculino; F = feminino).
+# cada id, name e sex são repetidos duas vezes
+
+# Complete the chained command below so that we are
+# selecting the id, name, and sex column from students4
+# and storing the result in student_info.
+#
+student_info <- students4 %>%
+  select(id,name,sex) %>%
+  print
+submit()
+# O que fiz acima foi dividir students4 em uma tabela separada chamada de *student_info* contendo id, name e sex
+
+##################### Script6¨###################
+# Excluir linhas repetidas
+
+# Add a call to unique() below, which will remove
+# duplicate rows from student_info.
+#
+# Like with the call to the print() function below,
+# you can omit the parentheses after the function name.
+# This is a nice feature of %>% that applies when
+# there are no additional arguments to specify.
+#
+student_info <- students4 %>%
+  select(id, name, sex) %>%
+  unique %>%
+  print
+submit()
+
+#################### Script7 #############################
+# Criar uma outra variavel 
+# Deixamos a coluna id em ambas as tabelas, sendo uma chave que liga od dados, poderia ter usado tbm o name
+
+# select() the id, class, midterm, and final columns
+# (in that order) and store the result in gradebook.
+#
+gradebook <- students4 %>%
+  select(id, class, midterm, final) %>%
+  print
+submit()
+
+
+############################################################
+# Dados confusos, quando uma única unidade de observação é armazenada em várias tabelas
+
 
