@@ -265,3 +265,10 @@ cran %>%
   arrange(desc(size_mb))
 submit()
 # Your call to arrange() goes here
+
+
+
+###############################################################
+#### swirl Lesson 3: Tidying Data with tidyr
+library(swirl)
+swirl()
