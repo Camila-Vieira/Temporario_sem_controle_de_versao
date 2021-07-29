@@ -1,8 +1,9 @@
 
-# Temporario_sem_controle_de_versao
+# Curso R - Coursera
+Data Science: Foundations using R Programa de cursos integrados
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of Temporario_sem_controle_de_versao is to ...
+É um repositório para guardar meus scripts.
 
