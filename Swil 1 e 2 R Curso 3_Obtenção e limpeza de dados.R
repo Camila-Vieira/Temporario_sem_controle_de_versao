@@ -592,5 +592,5 @@ stopwatch()
 ############################
 ## OBS: Por causa de coisas como anos bissextos, segundos bissextos e horário de verão, a duração de qualquer minuto, dia, mês, semana ou ano é relativo ao momento em que ocorre. 
 ### A duração de um segundo é sempre a mesma, independentemente de quando ocorre
-# Para isso os autores do lubridate introduziram 4 classes de objeto relativo a tempo: instants, intervals, durations, and periods.
+### Para isso os autores do lubridate introduziram 4 classes de objeto relativo a tempo: instants, intervals, durations, and periods.
 
