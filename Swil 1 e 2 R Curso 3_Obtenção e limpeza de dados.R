@@ -448,4 +448,149 @@ submit()
 ############################################################
 # Dados confusos, quando uma única unidade de observação é armazenada em várias tabelas
 
+# Os professores decidiram levar em consideração apenas as notas do exame final para determinar se os alunos foram passed ou failed em cada class. 
+# Os alunos foram aprovados em uma class se receberam uma nota de exame final de A ou B e falhou de outra forma
+# vamos adicionar uma nova coluna para cada tabela contendo essas informações para que não sejam perdidas quando juntá-las
+
+passed # Vizualizar
+failed # Vizualizar
+
+passed <- passed %>%
+  mutate(status = "passed")
+
+failed <- failed %>%
+  mutate(status = "failed")
+
+bind_rows(passed, failed)  ## Juntar as duas tabelas e colocar na ordem passed e depois failed
+
+# Cada linha é uma observação
+# cada coluna é uma variável
+# tabela contém uma única unidade observacional. 
+
+########################## Script8 ################################
+sat #Vizualizar
+
+# Accomplish the following three goals:
+#
+# 1. select() all columns that do NOT contain the word "total",
+# since if we have the male and female data, we can always
+# recreate the total count in a separate column, if we want it.
+# Hint: Use the contains() function, which you'll
+# find detailed in 'Special functions' section of ?select.
+#
+# 2. gather() all columns EXCEPT score_range, using
+# key = part_sex and value = count.
+#
+# 3. separate() part_sex into two separate variables (columns),
+# called "part" and "sex", respectively. You may need to check
+# the 'Examples' section of ?separate to remember how the 'into'
+# argument should be phrased.
+#
+sat %>%
+  select(-contains("total")) %>%
+  gather(part_sex, count, -score_range) %>%
+  separate(part_sex, c("part", "sex")) %>%
+  print
+submit()
+
+##################### Script9 ##############################
+# Append two more function calls to accomplish the following:
+#
+# 1. Use group_by() (from dplyr) to group the data by part and
+# sex, in that order.
+#
+# 2. Use mutate to add two new columns, whose values will be
+# automatically computed group-by-group:
+#
+#   * total = sum(count)
+#   * prop = count / total
+#
+sat %>%
+  select(-contains("total")) %>%
+  gather(part_sex, count, -score_range) %>%
+  separate(part_sex, c("part", "sex")) %>%
+  group_by(part, sex) %>%
+  mutate(total = sum(count),
+         prop = count / total
+  ) %>% print
+submit()
+
+library(swirl)
+swirl()
+
+
+###### swirl Lesson 1: Dates and Times with lubridate
+
+### A maioria das datas são representadas como cadeia de caracteres, ou seja, entre " "
+
+Sys.getlocale("LC_TIME") # Vizualizar minha localização atual
+library(lubridate) # Carregar pacote
+help(package = lubridate)  # Para trabalhar com datas e períodos de tempo.
+# data-hora (anos, meses, dias, horas, minutos e segundos)
+###### today() e now() fornecem informações de data e hora perfeitamente formatadas.
+this_day <- today()  # A função *today* retorna a data de hoje 
+this_day
+year(this_day) # Extrair o ano da variavel, pode usar year(), month(), or day()
+wday(this_day) # Extrair o dia da semana, a parecerá o numero correspondente ao dia da semana, sendo que 1 = Sunday, 2 = Monday, 3 = Tuesday
+wday(this_day, label = TRUE) # com a adição de *label = TRUE*, ao inves do numero, no console é emitido o dia da semana
+this_moment <- now() # A função *now* retornará a data-hora deste momento
+this_moment
+minute(this_moment) # Extrair os minutos da variavel, pode usar hour(), minute(), and second(), além de year, month, day, or day of week
+my_date <- ymd("1989-05-17")
+my_date
+class(my_date) # Então ymd () pegou uma string de caracteres como entrada e retornou um objeto de classe POSIXct.
+#### POSIXct é uma maneira que R armazena informações de data e hora internamente.
+ymd("1989 May 17") # Retornara eo *May* em numero do mes
+############ *ymd* analisa ano, mes, dia, nessa ordem
+########### *mdy* analisa mes, dia, ano, nessa ordem
+########### *dmy* analisa dia, mes, ano
+mdy("March 12, 1975")
+dmy(25081985) # 25081985, supostamente representa o 25º dia de Agosto de 1985
+ymd("192012")
+ymd("1920/1/2") # Agora separando
+
+###### Datas e horas ######
+dt1
+ymd_hms(dt1) # ano, mes, dia / horas, minutos, segundos
+hms("03:22:14") # Sem data, apenas com as horas
+dt2
+ymd(dt2)
+update(this_moment, hours = 8, minutes = 34, seconds = 55) # *update* permite atualizar as horas de uma variavel
+this_moment
+this_moment <- update(this_moment, hours = 11, minutes = 35, seconds = 4) # É o mesmo da linha de cima, porém atualizei as mudanças na variavel
+this_moment
+
+##### Exemplo de exercicio #########
+# Moro em Nova York e vou viajar para Hong Kong daqui a dois dias, vou pegar o aviao as 17:34 e chegar no destino 15 h 50 m depois
+
+?now
+nyc <- now("America/New_York")
+depart <- nyc + days(2) # Para adicionar a data de depois de amanhã, que é o dia da viagem
+depart
+depart <- update(depart, hours = 17, minutes = 34) # Adicionar o horario da viagem
+depart
+
+# Meu amigo quer saber que horas deve me buscar no aeroporto de Hong Kong
+
+arrive <- depart + hours(15) + minutes(50)  # A hora em que será em Nova York quando eu chegar em Hong Kong
+# O que preciso saber é que horas será em Hong Kong quando eu chegar la 
+?with_tz # retorna uma data e hora como apareceria em um fuso horário diferente. O momento real medido não muda, apenas o fuso horário em que é medido
+arrive <- with_tz(arrive,"Asia/Hong_Kong") # Para saber a hora de chegada de acordo com o fuso horario
+arrive
+
+### A ultima vez que vi meu amigo foi em June 17, 2018 em singapura, quero saber quanto tempo se passou
+
+last_time <- mdy("June 17, 2008", tz = "Singapore") # Vizualizar a data com o correto fuso horario
+last_time
+?interval # cria um objeto Interval com as datas de início e término especificadas
+how_long <- interval(last_time, arrive)
+how_long
+as.period(how_long) # Para ver quanto tempo se passou
+
+stopwatch()
+
+############################
+## OBS: Por causa de coisas como anos bissextos, segundos bissextos e horário de verão, a duração de qualquer minuto, dia, mês, semana ou ano é relativo ao momento em que ocorre. 
+### A duração de um segundo é sempre a mesma, independentemente de quando ocorre
+# Para isso os autores do lubridate introduziram 4 classes de objeto relativo a tempo: instants, intervals, durations, and periods.
 
